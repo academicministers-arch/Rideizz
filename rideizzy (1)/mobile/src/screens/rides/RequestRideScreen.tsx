@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import PlaceAutocompleteInput from "../../components/PlaceAutocompleteInput";
 import { PlaceDetails } from "../../services/maps";
 import { api } from "../../services/api";
+import { formatUGX } from "../../utils/currency";
 
 const RIDE_CLASSES = [
   { key: "motorbike", label: "Motorbike", note: "Fastest through traffic, 1 passenger" },
@@ -82,7 +83,7 @@ export default function RequestRideScreen() {
             <Text style={styles.vehicleNote}>{v.note}</Text>
           </View>
           <Text style={styles.vehiclePrice}>
-            {estimate ? `$${estimate.estimates[v.key].toFixed(2)}` : "—"}
+            {estimate ? formatUGX(estimate.estimates[v.key]) : "—"}
           </Text>
         </TouchableOpacity>
       ))}
