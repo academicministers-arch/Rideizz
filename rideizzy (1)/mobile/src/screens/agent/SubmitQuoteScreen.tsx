@@ -19,7 +19,7 @@ export default function SubmitQuoteScreen() {
       await api.post(`/travel/requests/${requestId}/quote`, {
         request_id: requestId,
         price: parseFloat(price) || 0,
-        currency: "USD",
+        currency: "UGX",
         itinerary,
         expires_at: expiresAt,
       });
@@ -35,8 +35,8 @@ export default function SubmitQuoteScreen() {
       <Text style={styles.title}>{request.origin} → {request.destination}</Text>
       <Text style={styles.subtitle}>{request.depart_date} · {request.passengers} pax</Text>
 
-      <Text style={styles.label}>Price (USD)</Text>
-      <TextInput style={styles.input} value={price} onChangeText={setPrice} keyboardType="decimal-pad" placeholder="e.g. 850" />
+      <Text style={styles.label}>Price</Text>
+      <TextInput style={styles.input} value={price} onChangeText={setPrice} keyboardType="decimal-pad" placeholder="e.g. 3200000 (in UGX)" />
 
       <Text style={styles.label}>Itinerary details</Text>
       <TextInput
