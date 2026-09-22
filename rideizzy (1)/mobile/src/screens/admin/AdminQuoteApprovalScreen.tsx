@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { api } from "../../services/api";
+import { formatUGX } from "../../utils/currency";
 
 export default function AdminQuoteApprovalScreen() {
   const [quotes, setQuotes] = useState<any[]>([]);
@@ -27,7 +28,9 @@ export default function AdminQuoteApprovalScreen() {
         ListEmptyComponent={<Text style={styles.empty}>Nothing waiting on you right now.</Text>}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <Text style={styles.price}>{item.price} {item.currency}</Text>
+            <Text style={styles.price}>
+              {item.currency === "UGX" ? formatUGX(item.price) : `${item.price} ${item.currency}`}
+            </Text>
             <Text style={styles.itinerary}>{item.itinerary}</Text>
             <TouchableOpacity style={styles.approveButton} onPress={() => approve(item.quote_id)}>
               <Text style={styles.approveText}>Approve & Notify Traveler</Text>
