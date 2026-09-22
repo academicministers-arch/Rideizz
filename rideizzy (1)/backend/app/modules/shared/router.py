@@ -39,7 +39,7 @@ async def create_or_update_profile(payload: UserProfile, user: CurrentUser = Dep
     # every user gets a wallet the first time their profile is created
     wallet_ref = db.collection("wallets").document(user.uid)
     if not wallet_ref.get().exists:
-        wallet_ref.set({"balance": 0, "currency": "USD"})
+        wallet_ref.set({"balance": 0, "currency": "UGX"})
 
     return {"uid": user.uid, **profile_data}
 
