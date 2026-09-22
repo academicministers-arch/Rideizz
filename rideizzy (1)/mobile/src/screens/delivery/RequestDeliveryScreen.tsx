@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import PlaceAutocompleteInput from "../../components/PlaceAutocompleteInput";
 import { PlaceDetails } from "../../services/maps";
 import { api } from "../../services/api";
+import { formatUGX } from "../../utils/currency";
 
 const DELIVERY_CLASSES = [
   { key: "delivery_motorbike", label: "Motorbike Parcel", note: "Small packages, documents, food" },
@@ -86,7 +87,7 @@ export default function RequestDeliveryScreen() {
             <Text style={styles.vehicleNote}>{v.note}</Text>
           </View>
           <Text style={styles.vehiclePrice}>
-            {estimate ? `$${estimate.estimates[v.key].toFixed(2)}` : "—"}
+            {estimate ? formatUGX(estimate.estimates[v.key]) : "—"}
           </Text>
         </TouchableOpacity>
       ))}
