@@ -8,25 +8,30 @@ from app.models.schemas import RideRequest, RideStatusUpdate, DriverLocationUpda
 router = APIRouter(prefix="/rides", tags=["rides"])
 
 # Pricing model per vehicle class: base fare + (distance_km * per_km) +
-# (duration_min * per_min), with a minimum fare floor. Each class has its
-# own numbers rather than a shared multiplier, because a motorbike, a car,
-# and a moving truck are different vehicles with different cost structures -
-# not just "cheaper/pricier versions of the same ride."
+# (duration_min * per_min), with a minimum fare floor. All amounts are in
+# Ugandan Shillings (UGX) - no decimals, since UGX isn't normally quoted
+# with cents. Each class has its own numbers rather than a shared
+# multiplier, because a motorbike (boda), a car, and a moving truck are
+# different vehicles with different cost structures - not just
+# "cheaper/pricier versions of the same ride."
 #
 # Delivery classes live in this same table (and this same /rides/estimate
 # endpoint) because the underlying calculation - distance, time, vehicle
 # cost - is identical. The delivery module only differs in what happens
 # AFTER the price is estimated (its own request/status endpoints).
+#
+# These are starting figures loosely modeled on typical Kampala boda/taxi
+# fares - adjust to match what you actually want to charge.
 VEHICLE_PRICING = {
     # Passenger rides
-    "motorbike": {"base": 0.5, "per_km": 0.30, "per_min": 0.05, "min_fare": 1.0},
-    "economy":   {"base": 1.5, "per_km": 0.65, "per_min": 0.15, "min_fare": 2.0},
-    "comfort":   {"base": 2.0, "per_km": 0.85, "per_min": 0.20, "min_fare": 3.0},
-    "xl":        {"base": 2.5, "per_km": 1.05, "per_min": 0.25, "min_fare": 4.0},
+    "motorbike": {"base": 1000, "per_km": 700, "per_min": 100, "min_fare": 2000},
+    "economy":   {"base": 3000, "per_km": 1200, "per_min": 200, "min_fare": 5000},
+    "comfort":   {"base": 4000, "per_km": 1600, "per_min": 300, "min_fare": 8000},
+    "xl":        {"base": 5000, "per_km": 2000, "per_min": 400, "min_fare": 12000},
     # Delivery / moving
-    "delivery_motorbike":   {"base": 1.0, "per_km": 0.40, "per_min": 0.10, "min_fare": 1.5},
-    "delivery_truck_small": {"base": 5.0, "per_km": 1.20, "per_min": 0.20, "min_fare": 8.0},
-    "delivery_truck_large": {"base": 12.0, "per_km": 2.00, "per_min": 0.30, "min_fare": 20.0},
+    "delivery_motorbike":   {"base": 2000, "per_km": 800, "per_min": 150, "min_fare": 3000},
+    "delivery_truck_small": {"base": 15000, "per_km": 2500, "per_min": 400, "min_fare": 25000},
+    "delivery_truck_large": {"base": 40000, "per_km": 4000, "per_min": 600, "min_fare": 70000},
 }
 
 
@@ -47,11 +52,13 @@ async def estimate_fare(payload: FareEstimateRequest, user: CurrentUser = Depend
     estimates = {}
     for vehicle_class, rates in VEHICLE_PRICING.items():
         raw_fare = rates["base"] + distance_km * rates["per_km"] + duration_min * rates["per_min"]
-        estimates[vehicle_class] = round(max(raw_fare, rates["min_fare"]), 2)
+        # UGX isn't quoted with decimals - round to the nearest whole shilling.
+        estimates[vehicle_class] = round(max(raw_fare, rates["min_fare"]))
 
     return {
         "distance_km": round(distance_km, 2),
         "duration_min": round(duration_min, 1),
+        "currency": "UGX",
         "estimates": estimates,
     }
 
