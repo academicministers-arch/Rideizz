@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { api } from "../../services/api";
+import { formatUGX } from "../../utils/currency";
 
 const STATUS_LABELS: Record<string, string> = {
   pending: "Waiting for a quote from our travel partner",
@@ -38,7 +39,9 @@ export default function FlightRequestStatusScreen() {
 
       {request.status === "quote_approved" && request.quote && (
         <View style={styles.quoteCard}>
-          <Text style={styles.quotePrice}>{request.quote.price} {request.quote.currency}</Text>
+          <Text style={styles.quotePrice}>
+            {request.quote.currency === "UGX" ? formatUGX(request.quote.price) : `${request.quote.price} ${request.quote.currency}`}
+          </Text>
           <Text style={styles.quoteItinerary}>{request.quote.itinerary}</Text>
           <View style={styles.actions}>
             <TouchableOpacity style={styles.acceptButton} onPress={() => handleDecision(request.quote.quote_id, "accept")}>
