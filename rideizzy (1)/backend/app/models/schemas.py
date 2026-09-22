@@ -100,7 +100,7 @@ class FlightRequest(BaseModel):
 class FlightQuote(BaseModel):
     request_id: str
     price: float
-    currency: str = "USD"
+    currency: str = "UGX"
     itinerary: str
     expires_at: str
 
