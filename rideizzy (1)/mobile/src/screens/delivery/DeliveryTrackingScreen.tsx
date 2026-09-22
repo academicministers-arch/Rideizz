@@ -4,6 +4,7 @@ import { useRoute } from "@react-navigation/native";
 import MapView, { Marker } from "react-native-maps";
 import { api } from "../../services/api";
 import { watchDriverLocation } from "../../services/driverLocation";
+import { formatUGX } from "../../utils/currency";
 
 const STATUS_LABELS: Record<string, string> = {
   searching: "Finding a driver...",
@@ -67,7 +68,7 @@ export default function DeliveryTrackingScreen() {
       <View style={styles.statusBar}>
         <Text style={styles.title}>{STATUS_LABELS[delivery.status] ?? delivery.status}</Text>
         <Text style={styles.meta}>{delivery.packageDescription}</Text>
-        {delivery.fare != null && <Text style={styles.fare}>${delivery.fare}</Text>}
+        {delivery.fare != null && <Text style={styles.fare}>{formatUGX(delivery.fare)}</Text>}
       </View>
     </View>
   );
