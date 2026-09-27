@@ -1,12 +1,11 @@
 import axios from "axios";
 import { auth } from "../config/firebase";
 
-// Point this at your FastAPI backend.
-// - iOS simulator: http://localhost:8000
-// - Android emulator: http://10.0.2.2:8000
-// - Physical device: http://<your-computer-LAN-IP>:8000
+// Backend URL - this is your GitHub Codespaces forwarded port.
+// If you regenerate/restart the Codespace, this URL can change - check the
+// Ports tab in VS Code and update this if requests start failing.
 export const api = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: "https://bug-free-system-wrwj7pgvwq76fgx79-8000.app.github.dev",
 });
 
 api.interceptors.request.use(async (config) => {
